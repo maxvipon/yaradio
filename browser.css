@@ -1,0 +1,43 @@
+html
+{
+	overflow: hidden;
+}
+
+body
+{
+	font-family: -apple-system,
+			BlinkMacSystemFont,
+			'Segoe UI',
+			Roboto,
+			Oxygen-Sans,
+			Ubuntu,
+			Cantarell,
+			'Helvetica Neue',
+			sans-serif,
+			'Apple Color Emoji',
+			'Segoe UI Emoji',
+			'Segoe UI Symbol' !important;
+	text-rendering: optimizeLegibility !important;
+	font-feature-settings: 'liga', 'clig', 'dlig', 'kern';
+}
+
+/* Bind the toolbar as the window's draggable region */
+.page-root .head {
+	-webkit-app-region: drag;
+}
+
+.footer, .head__left, .logo,
+.nav__level_0 .footer__static-text
+{
+	display: none !important;
+}
+
+.nav__level_0 .nav__items
+{
+	padding-top: 30px !important;
+}
+
+.nav__level_0 .nav__banner
+{
+	padding-bottom: 0;
+}
