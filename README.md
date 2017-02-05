@@ -34,6 +34,11 @@ Icon=/full/path/to/folder/YaRadio/resources/app/static/Icon.png
 [**Download**](https://github.com/maxvipon/yaradio/releases/latest) and unzip to some location.
 
 
+## Related
+
+* [yam](https://github.com/artemeff/yam) – Yandex.Music app
+
+
 ---
 
 ## Dev
