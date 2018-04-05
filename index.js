@@ -3,12 +3,13 @@ const path = require('path');
 const fs = require('fs');
 const electron = require('electron');
 const menu = require('./menu');
+const ctxMenu = require('./contextMenu');
 const config = require('./config');
 
 const app = electron.app;
 
-require('electron-debug')({enabled: true});
-require('electron-context-menu')();
+//require('electron-debug')({enabled: true});
+//require('electron-context-menu')();
 
 let win;
 let isQuitting = false;
@@ -29,7 +30,6 @@ if (isAlreadyRunning) {
 
 function createMainWindow() {
 	const lastWindowState = config.get('lastWindowState');
-	const iconPath = path.join(__dirname, 'static/Icon.png'); // ??? process.platform === 'linux' && 
 	
 	const win = new electron.BrowserWindow({
 		title: app.getName(),
@@ -38,7 +38,7 @@ function createMainWindow() {
 		y: lastWindowState.y,
 		width: lastWindowState.width,
 		height: lastWindowState.height,
-		icon: iconPath,
+		icon: process.platform === 'linux' && path.join(__dirname, 'static/Icon.png'),
 		minWidth: 800,
 		minHeight: 700,
 		titleBarStyle: 'hidden-inset',
@@ -57,32 +57,6 @@ function createMainWindow() {
 
 	win.loadURL('https://radio.yandex.ru/');
 
-	const appIcon = new electron.Tray(iconPath);
-
-	let contextMenu = electron.Menu.buildFromTemplate([
-		{
-				label: 'Show App', click: function () {
-						win.show();
-				}
-		},
-		{
-				label: 'Quit', click: function () {
-						isQuitting = true;
-						app.quit();
-				}
-		}
-	]);
-
-	appIcon.setContextMenu(contextMenu);
-	appIcon.addListener('click', (e)=>{
-		e.preventDefault();
-		if (win.isVisible()){
-			win.hide();
-		} else {
-			win.show();
-		}
-	})
-
 	win.on('close', e => {
 		if (!isQuitting) {
 			e.preventDefault();
@@ -99,16 +73,13 @@ function createMainWindow() {
 		e.preventDefault();
 	});
 
-	win.on('show', function () {
-		appIcon.setHighlightMode('always')
-	})
-
 	return win;
 }
 
 app.on('ready', () => {
 	win = createMainWindow();
 	menu.create(win);
+	ctxMenu.create(win, app);
 
 	electron.globalShortcut.register('MediaPlayPause', () => win.send('play'));
 	electron.globalShortcut.register('MediaNextTrack', () => win.send('next'));
