@@ -7,8 +7,8 @@ const config = require('./config');
 
 const app = electron.app;
 
-// require('electron-debug')({enabled: true});
-// require('electron-context-menu')();
+require('electron-debug')({enabled: true});
+require('electron-context-menu')();
 
 let win;
 let isQuitting = false;
@@ -29,7 +29,8 @@ if (isAlreadyRunning) {
 
 function createMainWindow() {
 	const lastWindowState = config.get('lastWindowState');
-
+	const iconPath = path.join(__dirname, 'static/Icon.png'); // ??? process.platform === 'linux' && 
+	
 	const win = new electron.BrowserWindow({
 		title: app.getName(),
 		show: false,
@@ -37,7 +38,7 @@ function createMainWindow() {
 		y: lastWindowState.y,
 		width: lastWindowState.width,
 		height: lastWindowState.height,
-		icon: process.platform === 'linux' && path.join(__dirname, 'static/Icon.png'),
+		icon: iconPath,
 		minWidth: 800,
 		minHeight: 700,
 		titleBarStyle: 'hidden-inset',
@@ -56,6 +57,32 @@ function createMainWindow() {
 
 	win.loadURL('https://radio.yandex.ru/');
 
+	const appIcon = new electron.Tray(iconPath);
+
+	let contextMenu = electron.Menu.buildFromTemplate([
+		{
+				label: 'Show App', click: function () {
+						win.show();
+				}
+		},
+		{
+				label: 'Quit', click: function () {
+						isQuitting = true;
+						app.quit();
+				}
+		}
+	]);
+
+	appIcon.setContextMenu(contextMenu);
+	appIcon.addListener('click', (e)=>{
+		e.preventDefault();
+		if (win.isVisible()){
+			win.hide();
+		} else {
+			win.show();
+		}
+	})
+
 	win.on('close', e => {
 		if (!isQuitting) {
 			e.preventDefault();
@@ -71,6 +98,10 @@ function createMainWindow() {
 	win.on('page-title-updated', e => {
 		e.preventDefault();
 	});
+
+	win.on('show', function () {
+		appIcon.setHighlightMode('always')
+	})
 
 	return win;
 }
@@ -95,10 +126,11 @@ app.on('ready', () => {
 		}
 	});
 
-	page.on('new-window', (e, url) => {
-		e.preventDefault();
-		electron.shell.openExternal(url);
-	});
+	// Open new link in electron for authorizations
+	// page.on('new-window', (e, url) => {
+	// 	e.preventDefault();
+	// 	electron.shell.openExternal(url);
+	// });
 });
 
 app.on('activate', () => win.show());
