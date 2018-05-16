@@ -11,7 +11,7 @@ const helpSubmenu = [
 	{
 		label: `${appName} Website`,
 		click() {
-			shell.openExternal('https://github.com/maxvipon/yaradio');
+			shell.openExternal('https://github.com/dedpnd/yaradio');
 		}
 	},
 	{
@@ -26,7 +26,7 @@ ${app.getName()} ${app.getVersion()}
 Electron ${process.versions.electron}
 ${process.platform} ${process.arch} ${os.release()}`;
 
-			shell.openExternal(`https://github.com/maxvipon/yaradio/issues/new?body=${encodeURIComponent(body)}`);
+			shell.openExternal(`https://github.com/dedpnd/yaradio/issues/new?body=${encodeURIComponent(body)}`);
 		}
 	}
 ];
