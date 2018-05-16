@@ -6,9 +6,16 @@ const iconPath = path.join(__dirname, 'static/Icon.png');
 
 function ctxTpl(win, app) {
   return [
+		{
+			label: 'Play',
+			click: function (e) { return win.send('play')	}		
+		},
     {
 			label: 'Next Track',
-			click: () => win.send('next')
+			click: () => win.send('next')			
+		},
+		{
+			type: 'separator'
 		},
 		{
 			label: 'Like', 
