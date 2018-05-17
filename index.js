@@ -3,12 +3,13 @@ const path = require('path');
 const fs = require('fs');
 const electron = require('electron');
 const menu = require('./menu');
+const ctxMenu = require('./contextMenu');
 const config = require('./config');
 
 const app = electron.app;
 
-// require('electron-debug')({enabled: true});
-// require('electron-context-menu')();
+//require('electron-debug')({enabled: true});
+//require('electron-context-menu')();
 
 let win;
 let isQuitting = false;
@@ -29,7 +30,7 @@ if (isAlreadyRunning) {
 
 function createMainWindow() {
 	const lastWindowState = config.get('lastWindowState');
-
+	
 	const win = new electron.BrowserWindow({
 		title: app.getName(),
 		show: false,
@@ -78,6 +79,7 @@ function createMainWindow() {
 app.on('ready', () => {
 	win = createMainWindow();
 	menu.create(win);
+	ctxMenu.create(win, app);
 
 	electron.globalShortcut.register('MediaPlayPause', () => win.send('play'));
 	electron.globalShortcut.register('MediaNextTrack', () => win.send('next'));
@@ -95,10 +97,11 @@ app.on('ready', () => {
 		}
 	});
 
-	page.on('new-window', (e, url) => {
-		e.preventDefault();
-		electron.shell.openExternal(url);
-	});
+	// Open new link in electron for authorizations
+	// page.on('new-window', (e, url) => {
+	// 	e.preventDefault();
+	// 	electron.shell.openExternal(url);
+	// });
 });
 
 app.on('activate', () => win.show());
